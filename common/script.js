@@ -1,33 +1,58 @@
-const menu = document.createElement('div');
-menu.className = 'menu-dots';
+document.addEventListener("DOMContentLoaded", () => {
+  const year = document.getElementById("year");
+  if (year) year.textContent = new Date().getFullYear();
 
-menu.innerHTML = `
-  <div id="hamburger" tabindex="0" aria-label="Menu button" role="button">
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
-  <div class="dropdown-menu" aria-hidden="true">
-    <div class="dropdown-item">Option 1</div>
-    <div class="dropdown-item">Option 2</div>
- 
-  </div>
-`;
+  const menu = document.getElementById("menuToggle");
+  const dropdown = document.getElementById("dropdownMenu");
 
-document.body.appendChild(menu);
-
-const hamburger = menu.querySelector('#hamburger');
-const dropdown = menu.querySelector('.dropdown-menu');
-
-hamburger.addEventListener('click', () => {
-  menu.classList.toggle('active');
-  const isActive = menu.classList.contains('active');
-  dropdown.setAttribute('aria-hidden', !isActive);
-});
-
-document.addEventListener('click', (e) => {
-  if (!menu.contains(e.target)) {
-    menu.classList.remove('active');
-    dropdown.setAttribute('aria-hidden', 'true');
+  if (!menu || !dropdown) {
+    console.error("Menu not found");
+    return;
   }
+
+  function openMenu() {
+    dropdown.style.display = "block";
+    dropdown.getBoundingClientRect(); // force reflow so transition fires
+    menu.classList.add("active");
+  }
+
+  function closeMenu() {
+    menu.classList.remove("active");
+    dropdown.addEventListener("transitionend", function handler() {
+      if (!menu.classList.contains("active")) {
+        dropdown.style.display = "none";
+      }
+      dropdown.removeEventListener("transitionend", handler);
+    });
+  }
+
+  function toggleMenu() {
+    if (menu.classList.contains("active")) {
+      closeMenu();
+    } else {
+      openMenu();
+    }
+  }
+
+  menu.addEventListener("click", (e) => {
+    e.stopPropagation();
+    toggleMenu();
+  });
+
+  // Close menu when clicking outside — but NOT when clicking a dropdown item
+  document.addEventListener("click", (e) => {
+    if (!menu.contains(e.target) && menu.classList.contains("active")) {
+      closeMenu();
+    }
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && menu.classList.contains("active")) {
+      closeMenu();
+    }
+    if ((e.key === "Enter" || e.key === " ") && document.activeElement === menu) {
+      e.preventDefault();
+      toggleMenu();
+    }
+  });
 });

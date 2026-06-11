@@ -1,110 +1,387 @@
 <!DOCTYPE html>
-<html lang="ku">
+<html lang="ku" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Welcome MBTI Test</title>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: url("pexels-zetong-li-880728-18780512.jpg") no-repeat center center fixed;
-      background-size: cover;
-      background-position: 50% 49%;
-      color: #ffffff;
+      font-family: 'Vazirmatn', 'Segoe UI', sans-serif;
+      background: #0f0f1a;
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 80vh;
-      padding: 50px;
-      margin: 10px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Animated gradient orbs */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.5;
+      animation: float 20s infinite ease-in-out;
+    }
+
+    .orb-1 {
+      width: 500px;
+      height: 500px;
+      background: #6366f1;
+      top: -10%;
+      left: -10%;
+      animation-delay: 0s;
+    }
+
+    .orb-2 {
+      width: 400px;
+      height: 400px;
+      background: #ec4899;
+      bottom: -10%;
+      right: -10%;
+      animation-delay: -5s;
+    }
+
+    .orb-3 {
+      width: 300px;
+      height: 300px;
+      background: #06b6d4;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      animation-delay: -10s;
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translate(0, 0) scale(1);
+      }
+      25% {
+        transform: translate(50px, -30px) scale(1.1);
+      }
+      50% {
+        transform: translate(-30px, 50px) scale(0.9);
+      }
+      75% {
+        transform: translate(30px, 30px) scale(1.05);
+      }
+    }
+
+    /* Grid pattern overlay */
+    .grid-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Floating particles */
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      animation: particle-float 15s infinite linear;
+    }
+
+    .particle:nth-child(1) { left: 10%; top: 20%; animation-delay: 0s; }
+    .particle:nth-child(2) { left: 20%; top: 80%; animation-delay: -2s; width: 6px; height: 6px; }
+    .particle:nth-child(3) { left: 70%; top: 10%; animation-delay: -4s; }
+    .particle:nth-child(4) { left: 80%; top: 60%; animation-delay: -6s; width: 3px; height: 3px; }
+    .particle:nth-child(5) { left: 40%; top: 40%; animation-delay: -8s; width: 5px; height: 5px; }
+    .particle:nth-child(6) { left: 90%; top: 30%; animation-delay: -10s; }
+    .particle:nth-child(7) { left: 15%; top: 50%; animation-delay: -12s; width: 7px; height: 7px; }
+    .particle:nth-child(8) { left: 60%; top: 90%; animation-delay: -14s; }
+
+    @keyframes particle-float {
+      0% {
+        transform: translateY(0) translateX(0);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100vh) translateX(50px);
+        opacity: 0;
+      }
     }
 
     .container {
-  background: rgba(0, 0, 0, 0.8);
-  padding: 3rem 2rem; /* smaller on mobile */
-  border-radius: 30px;
-  box-shadow: 0 8px 20px rgba(255, 0, 0, 0.3);
-  text-align: center;
-  max-width: 90%; /* allows more space on small screens */
-  width: 100%;
-}
+      position: relative;
+      z-index: 1;
+      background: rgba(20, 20, 35, 0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 3rem 2.5rem;
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 
+        0 25px 50px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(255, 255, 255, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      text-align: center;
+      max-width: 600px;
+      width: 100%;
+      animation: fadeInUp 0.8s ease-out;
+    }
 
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .icon {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 1.5rem;
+      background: rgba(99, 102, 241, 0.15);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      box-shadow: 0 0 30px rgba(99, 102, 241, 0.2);
+    }
 
     h1 {
-      font-size: 1rem;
-      margin-bottom: 6rem;
+      font-size: 1.6rem;
+      font-weight: 700;
       color: #ffffff;
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+      letter-spacing: -0.5px;
     }
 
-    p {
-      font-weight: bold;
-      font-size: 1rem;
+    .intro-text {
+      font-size: 1.05rem;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 2rem;
+      line-height: 1.8;
+      font-weight: 400;
+    }
+
+    #instructions {
+      display: none;
+      text-align: right;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      animation: fadeIn 0.5s ease-out;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    #instructions p {
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.75);
+      line-height: 2;
       margin-bottom: 1rem;
-
-      white-space: pre-wrap;
-  word-wrap: break-word;
-  line-height: 1.2;
+      font-weight: 400;
     }
-    @media (max-width: 600px) {
-  h1 {
-    margin-bottom: 2rem;
-    font-size: 1.5rem;
-  }
-  p {
-    width: 260px;
-  font-weight: bold;
-    font-size: 1.2rem;
-  }
-}
+
+    #instructions p:last-child {
+      margin-bottom: 0;
+    }
+
+    #instructions strong {
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .highlight {
+      color: #fbbf24;
+      font-weight: 600;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
 
     button {
-      background: #ff0000;
+      font-family: 'Vazirmatn', sans-serif;
       border: none;
-      color: white;
-      padding: 1rem 2rem;
-      margin: 1rem;
-      border-radius: 50px;
+      padding: 14px 36px;
+      border-radius: 14px;
       font-size: 1rem;
+      font-weight: 600;
       cursor: pointer;
-      transition: 0.3s;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
     }
 
-    button:hover {
-      background: #ff5555;
+    #start-btn {
+      background: #6366f1;
+      color: white;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+    }
+
+    #start-btn:hover {
+      background: #818cf8;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
+    }
+
+    #start-btn:active {
+      transform: translateY(0);
+    }
+
+    #ready-btn {
+      background: #10b981;
+      color: white;
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+      display: none;
+    }
+
+    #ready-btn:hover {
+      background: #34d399;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.5);
+    }
+
+    #ready-btn:active {
+      transform: translateY(0);
+    }
+
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
+      50% { box-shadow: 0 0 0 15px rgba(99, 102, 241, 0); }
+    }
+
+    #instructions::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    #instructions::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    #instructions::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 2rem 1.5rem;
+        border-radius: 20px;
+      }
+
+      h1 {
+        font-size: 1.3rem;
+      }
+
+      .intro-text {
+        font-size: 0.95rem;
+      }
+
+      #instructions p {
+        font-size: 0.9rem;
+        line-height: 1.9;
+      }
+
+      button {
+        padding: 12px 28px;
+        font-size: 0.95rem;
+        width: 100%;
+      }
+
+      .btn-group {
+        flex-direction: column;
+      }
+
+      .orb {
+        filter: blur(60px);
+      }
     }
   </style>
 </head>
 <body>
+  <!-- Animated background elements -->
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="grid-overlay"></div>
+  
+  <!-- Floating particles -->
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+
   <div class="container">
-    <p>ئەگەر دەتەوێت کەسایەتی خۆتت بۆ دەربچێت جوان ئەمە بخوێنەوە </p>
-    <p id="instructions" style="display:none;">
-
-       لەبیرت بێت هەموو ئەم سیفەتانە ئەتوانن لە قۆناغێکی ژیاندا هەر کەسێک بگرێتەوە.
-      
-     بۆ نموونە کەسێک کە بەزۆری بێبڕیار بێت،
-       دەتوانێت ببێتە یەکلاکەرەوە ئەگەر دۆخەکە ژیان یان مردن بێت یان ئەگەر کارەکەی پێویستی پێی بێت. 
-       
+    <div class="icon">✨</div>
+    <h1>تاقیکردنەوەی کەسایەتی MBTI</h1>
+    <p class="intro-text">ئەگەر دەتەوێت کەسایەتی خۆتت بۆ دەربچێت جوان ئەمە بخوێنەوە</p>
     
-       بۆیە ئەگەر ئەتەوێت کەسایەتی خۆتت بە جوانی بۆ دەربچێت جوان گوێ بگرە
+    <div id="instructions">
+      <p>لەبیرت بێت هەموو ئەم سیفەتانە ئەتوانن لە قۆناغێکی ژیاندا هەر کەسێک بگرێتەوە.</p>
       
-      یەکەم ئەوەیە ئەو دوو وەڵامەی دانراوە زۆر لە یەک ئەچن جوان هەردووکی بخوێنەوە بزانە کامەت تێدایە
+      <p>بۆ نموونە کەسێک کە بەزۆری <strong>بێبڕیار</strong> بێت، دەتوانێت ببێتە <span class="highlight">یەکلاکەرەوە</span> ئەگەر دۆخەکە ژیان یان مردن بێت یان ئەگەر کارەکەی پێویستی پێی بێت.</p>
       
+      <p>بۆیە ئەگەر ئەتەوێت کەسایەتی خۆتت بە جوانی بۆ دەربچێت جوان گوێ بگرە:</p>
       
-     
-     دوای ئەوەی کە زانیت کامیانت تێدایە ئەوە ٤ دوگمەت بۆ دەر ئەچێت بە پێی ئەوەی کە لەگەلت ئەگونجێت دای ئەنێیت
+      <p><strong>١.</strong> یەکەم ئەوەیە ئەو دوو وەڵامەی دانراوە زۆر لە یەک ئەچن جوان هەردووکی بخوێنەوە بزانە کامەت تێدایە</p>
       
+      <p><strong>٢.</strong> دوای ئەوەی کە زانیت کامیانت تێدایە ئەوە ٤ دوگمەت بۆ دەر ئەچێت بە پێی ئەوەی کە لەگەلت ئەگونجێت دای ئەنێیت</p>
+      
+      <p><strong>٣.</strong> سروشتی خۆت چۆنە ئەو وەڵامە هەڵبژێرە نەک ئەوەی لە خۆتدا ئەیبینیتەوە بەهۆی کاریگەری کەسانی تر گۆڕاوە</p>
+      
+      <p><strong>٤.</strong> با بڵێین دوو هەڵبژاردەکە هیچیان لە تۆ نەچوو ئەوکات و کەم هەڵدەبژێریت</p>
+      
+      <p class="highlight">گرنگە پێش هەموو هەڵبژاردنەکان جوان بیخوێنەوە لە مۆبایلەکەتدا</p>
+    </div>
 
-     سروشتی خۆت چۆنە ئەو وەڵامە هەڵبژێرە
-نەک ئەوەی لە خۆتدا ئەیبینیتەوە بەهۆی کاریگەری کەسانی تر گۆڕاوە 
-
-
-    با بڵێین دوو هەڵبژاردەکە هیچیان لە تۆ نەچوو ئەوکات و کەم هەڵدەبژێریت  
-     
-    گرنگە پێش هەموو هەڵبژاردنەکان جوان بیخوێنەوە لە مۆبایلەکەتدا
-      
-       </p>
-    <button id="start-btn">باشە</button>
-    <button id="ready-btn" style="display:none;" onclick="location.href='index.html'">ئامادەم</button>
+    <div class="btn-group">
+      <button id="start-btn" class="pulse">باشە</button>
+      <button id="ready-btn" onclick="location.href='index.html'">ئامادەم</button>
+    </div>
   </div>
 
   <script>
