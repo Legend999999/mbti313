@@ -7,49 +7,40 @@
 
   <title>پەیوەندی | MBTI313</title>
 
-  <link rel="stylesheet" href="contact.css" />
+  <link rel="stylesheet" href="common/contact.css" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-<base target="_blank">
+
 </head>
 
 <body>
   <!-- Skip navigation -->
   <a href="#main-content" class="skip-link">بازدان بۆ ناوەڕۆکی سەرەکی</a>
-
-  <!-- Decorative background -->
-  <div class="orb orb-1" aria-hidden="true"></div>
-  <div class="orb orb-2" aria-hidden="true"></div>
-  <div class="orb orb-3" aria-hidden="true"></div>
-  <div class="grid-overlay" aria-hidden="true"></div>
-
-  <!-- Floating particles -->
-  <div class="particle" aria-hidden="true"></div>
-  <div class="particle" aria-hidden="true"></div>
-  <div class="particle" aria-hidden="true"></div>
-  <div class="particle" aria-hidden="true"></div>
-  <div class="particle" aria-hidden="true"></div>
-  <div class="particle" aria-hidden="true"></div>
-  <div class="particle" aria-hidden="true"></div>
-  <div class="particle" aria-hidden="true"></div>
+  <!-- Floating Orbs -->
+<!-- Floating Orbs -->
+<div class="orb orb-1" aria-hidden="true"></div>
+<div class="orb orb-2" aria-hidden="true"></div>
 
   <!-- Hamburger Menu -->
-  <div class="menu-dots" id="menuToggle" aria-label="مێنیو" role="button" tabindex="0" aria-expanded="false">
-    <div id="hamburger">
+  <button class="menu-dots" id="menuToggle" aria-label="مێنیو" aria-controls="dropdownMenu" aria-expanded="false" type="button">
+    <span id="hamburger" aria-hidden="true">
       <span></span>
       <span></span>
       <span></span>
-    </div>
+    </span>
+  </button>
 
-    <nav class="dropdown-menu" id="dropdownMenu">
-      <a class="dropdown-item" href="index.html">🏠 سەرەکی</a>
-      <a class="dropdown-item" href="mbti/welcome.html">🧠 تاقیکردنەوەی MBTI</a>
-      <a class="dropdown-item" href="about.html">📖 دەربارە</a>
-      <a class="dropdown-item" href="contact.html">📧 پەیوەندی</a>
-    </nav>
-  </div>
+  <nav class="dropdown-menu" id="dropdownMenu" aria-hidden="true">
+    <a class="dropdown-item" href="index.html">🏠 سەرەکی</a>
+    <a class="dropdown-item" href="mbti/welcome.html">🧠 تاقیکردنەوەی MBTI</a>
+    <a class="dropdown-item" href="about.html">📖 دەربارە</a>
+    <a class="dropdown-item active" href="contact.html" aria-current="page">📧 پەیوەندی</a>
+  </nav>
+
+  <div class="menu-backdrop" id="menuBackdrop" hidden></div>
+
 
   <!-- Hero -->
   <section class="contact-hero">
@@ -204,31 +195,49 @@
 
       // Menu
       var menuToggle = document.getElementById("menuToggle");
+      var dropdownMenu = document.getElementById("dropdownMenu");
+      var menuBackdrop = document.getElementById("menuBackdrop");
 
-      if (menuToggle) {
+      function setMenu(open) {
+        if (!menuToggle || !dropdownMenu) return;
+
+        menuToggle.classList.toggle("active", open);
+        dropdownMenu.classList.toggle("active", open);
+        menuToggle.setAttribute("aria-expanded", open ? "true" : "false");
+        dropdownMenu.setAttribute("aria-hidden", open ? "false" : "true");
+
+        if (menuBackdrop) {
+          menuBackdrop.hidden = !open;
+          menuBackdrop.classList.toggle("active", open);
+        }
+      }
+
+      if (menuToggle && dropdownMenu) {
         menuToggle.addEventListener("click", function (e) {
-          if (e.target.closest(".dropdown-menu")) return;
           e.stopPropagation();
-          var isActive = menuToggle.classList.toggle("active");
-          menuToggle.setAttribute("aria-expanded", isActive ? "true" : "false");
+          setMenu(!menuToggle.classList.contains("active"));
         });
 
-        menuToggle.addEventListener("keydown", function (e) {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            var isActive = menuToggle.classList.toggle("active");
-            menuToggle.setAttribute("aria-expanded", isActive ? "true" : "false");
-          }
-          if (e.key === "Escape") {
-            menuToggle.classList.remove("active");
-            menuToggle.setAttribute("aria-expanded", "false");
-          }
+        dropdownMenu.addEventListener("click", function (e) {
+          e.stopPropagation();
         });
+
+        if (menuBackdrop) {
+          menuBackdrop.addEventListener("click", function () {
+            setMenu(false);
+          });
+        }
 
         document.addEventListener("click", function (e) {
-          if (!menuToggle.contains(e.target)) {
-            menuToggle.classList.remove("active");
-            menuToggle.setAttribute("aria-expanded", "false");
+          if (!menuToggle.contains(e.target) && !dropdownMenu.contains(e.target)) {
+            setMenu(false);
+          }
+        });
+
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape") {
+            setMenu(false);
+            menuToggle.focus();
           }
         });
       }
