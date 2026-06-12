@@ -1,0 +1,599 @@
+/* ============================================
+   MBTI313 - WELCOME PAGE CSS
+   ============================================ */
+
+:root {
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #12121a;
+  --bg-card: rgba(26, 26, 37, 0.6);
+  --bg-elevated: #222230;
+
+  --accent-primary: #f59e0b;
+  --accent-secondary: #06b6d4;
+  --accent-glow: rgba(245, 158, 11, 0.3);
+
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-glow: rgba(245, 158, 11, 0.25);
+
+  --font-kurdish: "Vazirmatn", "Noto Sans Arabic", sans-serif;
+
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-full: 9999px;
+
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.6);
+  --shadow-glow: 0 0 30px rgba(245, 158, 11, 0.15);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ============================================
+   RESET & BASE
+   ============================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-kurdish);
+  background: linear-gradient(160deg, var(--bg-primary) 0%, var(--bg-secondary) 40%, #0d0d14 100%);
+  background-attachment: fixed;
+  color: var(--text-primary);
+  min-height: 100vh;
+  line-height: 1.8;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 50%, rgba(245, 158, 11, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(6, 182, 212, 0.02) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+  animation: bgPulse 12s ease-in-out infinite;
+}
+
+@keyframes bgPulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* ============================================
+   SKIP LINK
+   ============================================ */
+
+.skip-link {
+  position: absolute;
+  top: -100%;
+  right: 1rem;
+  padding: 0.75rem 1.25rem;
+  background: var(--accent-primary);
+  color: #000;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  z-index: 9999;
+  transition: top 0.2s ease;
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  top: 1rem;
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+}
+
+/* ============================================
+   BACKGROUND ORBS
+   ============================================ */
+
+.orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.4;
+}
+
+.orb-1 {
+  width: 400px;
+  height: 400px;
+  background: rgba(245, 158, 11, 0.08);
+  top: -100px;
+  right: -100px;
+  animation: orbFloat1 20s ease-in-out infinite;
+}
+
+.orb-2 {
+  width: 300px;
+  height: 300px;
+  background: rgba(6, 182, 212, 0.06);
+  bottom: -80px;
+  left: -80px;
+  animation: orbFloat2 25s ease-in-out infinite;
+}
+
+.orb-3 {
+  width: 250px;
+  height: 250px;
+  background: rgba(139, 92, 246, 0.05);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: orbFloat3 18s ease-in-out infinite;
+}
+
+@keyframes orbFloat1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, 50px) scale(1.1); }
+  66% { transform: translate(-20px, 30px) scale(0.95); }
+}
+
+@keyframes orbFloat2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(-40px, -30px) scale(1.05); }
+  66% { transform: translate(20px, -50px) scale(0.9); }
+}
+
+@keyframes orbFloat3 {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -50%) scale(1.15); }
+}
+
+/* ============================================
+   GRID OVERLAY
+   ============================================ */
+
+.grid-overlay {
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ============================================
+   PARTICLES
+   ============================================ */
+
+.particle {
+  position: fixed;
+  width: 3px;
+  height: 3px;
+  background: rgba(245, 158, 11, 0.3);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  animation: particleFloat linear infinite;
+}
+
+.particle:nth-child(5) { left: 10%; animation-duration: 15s; animation-delay: 0s; }
+.particle:nth-child(6) { left: 25%; animation-duration: 18s; animation-delay: 2s; }
+.particle:nth-child(7) { left: 40%; animation-duration: 12s; animation-delay: 4s; }
+.particle:nth-child(8) { left: 55%; animation-duration: 20s; animation-delay: 1s; }
+.particle:nth-child(9) { left: 70%; animation-duration: 16s; animation-delay: 3s; }
+.particle:nth-child(10) { left: 85%; animation-duration: 14s; animation-delay: 5s; }
+.particle:nth-child(11) { left: 15%; animation-duration: 22s; animation-delay: 6s; }
+.particle:nth-child(12) { left: 90%; animation-duration: 17s; animation-delay: 0.5s; }
+
+@keyframes particleFloat {
+  0% {
+    transform: translateY(100vh) scale(0);
+    opacity: 0;
+  }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% {
+    transform: translateY(-10vh) scale(1);
+    opacity: 0;
+  }
+}
+
+/* ============================================
+   MAIN CONTAINER
+   ============================================ */
+
+.container {
+  position: relative;
+  z-index: 1;
+  max-width: 640px;
+  width: 100%;
+  margin: 2rem auto;
+  padding: 3rem 2rem;
+  text-align: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-lg);
+  animation: fadeInUp 0.8s var(--ease-out-expo) both;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================
+   ICON
+   ============================================ */
+
+.icon {
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+  display: inline-block;
+  animation: iconFloat 3s ease-in-out infinite;
+  filter: drop-shadow(0 0 20px rgba(245, 158, 11, 0.3));
+}
+
+@keyframes iconFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* ============================================
+   HEADING
+   ============================================ */
+
+h1 {
+  font-size: clamp(1.8rem, 5vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, #fff 0%, var(--accent-primary) 50%, #fff 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientShift 6s ease-in-out infinite;
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* ============================================
+   INTRO TEXT
+   ============================================ */
+
+.intro-text {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+  line-height: 1.9;
+}
+
+/* ============================================
+   INSTRUCTIONS SECTION
+   ============================================ */
+
+#instructions {
+  text-align: right;
+  margin-bottom: 2rem;
+  outline: none;
+}
+
+#instructions[hidden] {
+  display: none;
+}
+
+#instructions:not([hidden]) {
+  animation: fadeInUp 0.5s var(--ease-out-expo) both;
+}
+
+#instructions p {
+  color: var(--text-secondary);
+  margin-bottom: 1.25rem;
+  line-height: 2;
+  font-size: 1rem;
+}
+
+#instructions strong {
+  color: var(--accent-primary);
+  font-weight: 700;
+}
+
+#instructions .highlight {
+  color: var(--accent-secondary);
+  font-weight: 600;
+  background: rgba(6, 182, 212, 0.08);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  border-right: 3px solid var(--accent-secondary);
+  margin-top: 1.5rem;
+}
+
+/* ============================================
+   INSTRUCTION LIST (ol/li)
+   ============================================ */
+
+.instruction-list {
+  list-style: none;
+  padding: 0;
+  margin: 1.5rem 0;
+  counter-reset: instruction;
+}
+
+.instruction-list li {
+  position: relative;
+  padding-right: 3rem;
+  margin-bottom: 1.25rem;
+  color: var(--text-secondary);
+  line-height: 2;
+  font-size: 1rem;
+}
+
+.instruction-list li::before {
+  counter-increment: instruction;
+  content: counter(instruction, arabic-indic) ".";
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-weight: 700;
+  color: var(--accent-primary);
+  font-size: 1.1rem;
+  width: 2rem;
+  text-align: center;
+}
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+
+.btn-group {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+button {
+  font-family: var(--font-kurdish);
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 1rem 2.5rem;
+  border: none;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s var(--ease-out-back);
+  min-width: 160px;
+}
+
+button:focus-visible {
+  outline: 3px solid var(--accent-primary);
+  outline-offset: 3px;
+}
+
+#start-btn {
+  background: linear-gradient(135deg, var(--accent-primary), #d97706);
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.3);
+}
+
+#start-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 12px 32px rgba(245, 158, 11, 0.4), 0 0 0 4px rgba(245, 158, 11, 0.1);
+}
+
+#start-btn:active {
+  transform: translateY(-1px) scale(0.98);
+}
+
+#ready-btn {
+  background: linear-gradient(135deg, var(--accent-secondary), #0891b2);
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(6, 182, 212, 0.3);
+}
+
+#ready-btn:hover:not(:disabled) {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 12px 32px rgba(6, 182, 212, 0.4), 0 0 0 4px rgba(6, 182, 212, 0.1);
+}
+
+#ready-btn:active:not(:disabled) {
+  transform: translateY(-1px) scale(0.98);
+}
+
+#ready-btn:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+/* ============================================
+   PULSE ANIMATION
+   ============================================ */
+
+.pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 8px 24px rgba(245, 158, 11, 0.3), 0 0 0 0 rgba(245, 158, 11, 0.4);
+  }
+  50% {
+    box-shadow: 0 8px 24px rgba(245, 158, 11, 0.3), 0 0 0 12px rgba(245, 158, 11, 0);
+  }
+}
+
+/* ============================================
+   LOADING STATE
+   ============================================ */
+
+.loading {
+  position: relative;
+  pointer-events: none;
+}
+
+.loading::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  top: 50%;
+  left: 50%;
+  margin-top: -9px;
+  margin-left: -9px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.loading span {
+  opacity: 0;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   SCROLLBAR
+   ============================================ */
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--bg-elevated);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-primary);
+}
+
+::selection {
+  background: rgba(245, 158, 11, 0.25);
+  color: var(--text-primary);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 640px) {
+  .container {
+    margin: 1rem;
+    padding: 2rem 1.5rem;
+    border-radius: var(--radius-md);
+  }
+
+  h1 {
+    font-size: 1.6rem;
+  }
+
+  .intro-text {
+    font-size: 1rem;
+  }
+
+  #instructions p,
+  .instruction-list li {
+    font-size: 0.95rem;
+    line-height: 1.9;
+  }
+
+  button {
+    font-size: 1rem;
+    padding: 0.875rem 2rem;
+    min-width: 140px;
+  }
+
+  .btn-group {
+    gap: 0.75rem;
+  }
+
+  .orb {
+    opacity: 0.25;
+  }
+}
+
+@media (max-width: 380px) {
+  .container {
+    padding: 1.5rem 1rem;
+  }
+
+  h1 {
+    font-size: 1.4rem;
+  }
+
+  button {
+    width: 100%;
+  }
+
+  .btn-group {
+    flex-direction: column;
+  }
+}
+
+/* ============================================
+   ACCESSIBILITY
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  body::before {
+    animation: none;
+  }
+
+  .container {
+    animation: none;
+  }
+
+  .icon {
+    animation: none;
+  }
+}
