@@ -20,10 +20,29 @@
       #start-btn { display: none !important; }
     </style>
   </noscript>
-<base target="_blank">
+
 </head>
 
 <body>
+  <!-- Particles -->
+  <div class="particles" id="particles"></div>
+
+  <!-- Hamburger Menu -->
+  <div class="menu-dots" id="menuToggle" aria-label="مێنیو" role="button" tabindex="0">
+    <div id="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+    <nav class="dropdown-menu" id="dropdownMenu">
+  
+<a class="dropdown-item" href="../index.html">📖 سەرەکی</a>
+<a class="dropdown-item" href="../about.html">📖 دەربارە</a>
+<a class="dropdown-item" href="../contact.html">📧 پەیوەندی</a>
+    </nav>
+  </div>
+
   <!-- Skip navigation for keyboard users -->
   <a href="#main-content" class="skip-link">بازدان بۆ ناوەڕۆکی سەرەکی</a>
 
@@ -97,39 +116,78 @@
     </div>
   </main>
 
-  <script>
+<script>
     (function () {
       "use strict";
 
-      const startBtn = document.getElementById("start-btn");
-      const instructions = document.getElementById("instructions");
-      const readyBtn = document.getElementById("ready-btn");
+      /* ── MENU ── */
+      var menuToggle = document.getElementById("menuToggle");
+      var menuOverlay = document.getElementById("menuOverlay");
 
-      if (!startBtn || !instructions || !readyBtn) return;
+      function setMenuOpen(isOpen) {
+        if (menuToggle) {
+          menuToggle.classList.toggle("active", isOpen);
+          menuToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+        }
+        if (menuOverlay) {
+          menuOverlay.classList.toggle("active", isOpen);
+        }
+      }
 
-      startBtn.addEventListener("click", function () {
-        instructions.hidden = false;
-        readyBtn.hidden = false;
-        startBtn.hidden = true;
+      if (menuToggle) {
+        menuToggle.addEventListener("click", function (e) {
+          if (e.target.closest(".dropdown-menu")) return;
+          e.stopPropagation();
+          setMenuOpen(!menuToggle.classList.contains("active"));
+        });
 
-        // Move focus to instructions for screen reader/keyboard users
-        instructions.setAttribute("tabindex", "-1");
-        instructions.focus();
+        menuToggle.addEventListener("keydown", function (e) {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            setMenuOpen(!menuToggle.classList.contains("active"));
+          }
+          if (e.key === "Escape") {
+            setMenuOpen(false);
+          }
+        });
+      }
 
-        // Smooth scroll to instructions
-        instructions.scrollIntoView({ behavior: "smooth", block: "start" });
+      if (menuOverlay) {
+        menuOverlay.addEventListener("click", function () {
+          setMenuOpen(false);
+        });
+      }
+
+      document.addEventListener("click", function (e) {
+        if (menuToggle && !menuToggle.contains(e.target)) {
+          setMenuOpen(false);
+        }
       });
 
-      readyBtn.addEventListener("click", function () {
-        readyBtn.disabled = true;
-        readyBtn.classList.add("loading");
-        readyBtn.querySelector("span").textContent = "چاوەڕێ بکە...";
+      /* ── START / READY BUTTONS ── */
+      var startBtn = document.getElementById("start-btn");
+      var instructions = document.getElementById("instructions");
+      var readyBtn = document.getElementById("ready-btn");
 
-        // Small delay to show loading state before navigation
-        setTimeout(function () {
-          window.location.href = "index.html";
-        }, 300);
-      });
+      if (startBtn && instructions && readyBtn) {
+        startBtn.addEventListener("click", function () {
+          instructions.hidden = false;
+          readyBtn.hidden = false;
+          startBtn.hidden = true;
+          instructions.setAttribute("tabindex", "-1");
+          instructions.focus();
+          instructions.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+
+        readyBtn.addEventListener("click", function () {
+          readyBtn.disabled = true;
+          readyBtn.classList.add("loading");
+          readyBtn.querySelector("span").textContent = "چاوەڕێ بکە...";
+          setTimeout(function () {
+            window.location.href = "index.html";
+          }, 300);
+        });
+      }
     })();
   </script>
 </body>
