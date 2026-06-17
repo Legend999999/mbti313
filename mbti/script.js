@@ -1,162 +1,166 @@
-const questionText = document.getElementById("question-text");
-const choicesContainer = document.getElementById("choices-container");
-const nextBtn = document.getElementById("next-btn");
-const prevBtn = document.getElementById("prev-btn");
-const scaleContainer = document.getElementById("scale-container");
-const scaleLevels = ["کەم", "مامناوەند", "زۆر", "زیاد لە پێویست"];
+// ===== MBTI Test - Kurdish 5-Point Scale =====
 
-let currentIndex = 0;
-const answers = new Array(mbtiQuestions.length).fill(null);
-const functionScores = { Ti: 0, Te: 0, Fi: 0, Fe: 0, Ni: 0, Ne: 0, Si: 0, Se: 0 };
+const scaleOptions = [
+  { label: "تەواو سەرەوە", value: 2 },
+  { label: "سەرەوە",       value: 1 },
+  { label: "بێلایەن",      value: 0 },
+  { label: "خوارەوە",      value: -1 },
+  { label: "تەواو خوارەوە", value: -2 }
+];
 
-// Render the scale buttons
-function renderScale(func, callback) {
-  scaleContainer.innerHTML = "";
-  scaleLevels.forEach((level, idx) => {
+let currentQuestion = 0;
+let answers = [];
+let started = false;
+
+const app = document.getElementById("app");
+
+// ========== SCREENS ==========
+
+function showWelcome() {
+  started = false;
+  app.innerHTML = `
+    <div class="fade-in">
+      <div class="welcome-title">تاقیکردنەوەی MBTI</div>
+      <div class="welcome-subtitle">
+        بە ٣٢ پرسیار کەسایەتی خۆت بدۆزەوە<br>
+        وەڵام بدەوە بەپێی ئەوەی کە چەند بەهێزی هەست دەکەیت
+      </div>
+      <button class="start-btn" onclick="startTest()">دەستپێکردن</button>
+    </div>
+  `;
+}
+
+function startTest() {
+  started = true;
+  currentQuestion = 0;
+  answers = new Array(questions.length).fill(null);
+  showQuestion();
+}
+
+function showQuestion() {
+  const q = questions[currentQuestion];
+  const progress = ((currentQuestion + 1) / questions.length) * 100;
+
+  app.innerHTML = `
+    <div class="fade-in">
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: ${progress}%"></div>
+      </div>
+      <div class="question-counter">پرسیار ${currentQuestion + 1} لە ${questions.length}</div>
+      <div id="question-text">${q.text}</div>
+      <div id="scale-container"></div>
+      <div class="navigation">
+        <button class="nav-btn" id="prev-btn" onclick="goPrev()">پێشتر</button>
+        <button class="nav-btn" id="next-btn" onclick="goNext()" disabled>دواتر</button>
+      </div>
+    </div>
+  `;
+
+  renderScale();
+  updateNavButtons();
+}
+
+function renderScale() {
+  const container = document.getElementById("scale-container");
+  container.innerHTML = "";
+
+  scaleOptions.forEach((opt) => {
     const btn = document.createElement("div");
     btn.className = "scale-btn";
-    btn.textContent = level;
-    btn.onclick = () => {
-      // mark selected visually
-      scaleContainer.querySelectorAll(".scale-btn").forEach(b => b.classList.remove("selected"));
+    btn.textContent = opt.label;
+
+    if (answers[currentQuestion] === opt.value) {
       btn.classList.add("selected");
-      callback(idx); // send value back (0=کەم , 1=مامناوەند , 2=زۆر, 3=زیاتر لە زۆر)
-    };
-    scaleContainer.appendChild(btn);
-  });
-}
-
-// Render current question and choices
-function renderQuestion() {
-  const q = mbtiQuestions[currentIndex];
-  questionText.textContent = q.question;
-
-  choicesContainer.innerHTML = "";
-  scaleContainer.innerHTML = ""; // clear scale until a choice is clicked
-
-  q.options.forEach((opt, idx) => {
-    const btn = document.createElement("div");
-    btn.className = "choice-btn";
-    btn.textContent = opt;
-
-    if (answers[currentIndex] && answers[currentIndex].choiceIdx === idx) {
-      btn.classList.add("selected");
-      if (answers[currentIndex].scaleValue != null) {
-        renderScale(q.functions[idx], () => {}); // keep scale visible if already chosen
-      }
     }
 
-    btn.onclick = () => {
-      // When a choice is clicked, show scale buttons
-      renderScale(q.functions[idx], (scaleValue) => {
-        // Record the choice + scale value
-      // Remove old score if it exists
-if (answers[currentIndex] !== null) {
-  const oldFunc = q.functions[answers[currentIndex].choiceIdx];
-  const oldValue = answers[currentIndex].scaleValue;
-  functionScores[oldFunc] -= oldValue;
-}
+    btn.addEventListener("click", () => {
+      selectAnswer(opt.value);
+    });
 
-// Save new answer
-answers[currentIndex] = { choiceIdx: idx, scaleValue: scaleValue };
-
-// Add new score
-functionScores[q.functions[idx].name] += q.functions[idx].scale[scaleValue];
-
-
-
-        updateSelection();
-        nextBtn.disabled = false;
-      });
-    };
-
-    choicesContainer.appendChild(btn);
-  });
-
-  prevBtn.disabled = currentIndex === 0;
-  nextBtn.textContent = currentIndex === mbtiQuestions.length - 1 ? "کۆتایی" : "دواتر";
-  nextBtn.disabled = !answers[currentIndex] || answers[currentIndex].scaleValue == null;
-}
-
-// Highlight selected choice
-function updateSelection() {
-  const buttons = choicesContainer.querySelectorAll(".choice-btn");
-  buttons.forEach((btn, idx) => {
-    btn.classList.toggle(
-      "selected",
-      answers[currentIndex] && answers[currentIndex].choiceIdx === idx
-    );
+    container.appendChild(btn);
   });
 }
 
-// Navigation
-nextBtn.onclick = () => {
-  if (!answers[currentIndex] || answers[currentIndex].scaleValue == null) {
-    alert("Please select a choice and scale level.");
-    return;
+function selectAnswer(value) {
+  answers[currentQuestion] = value;
+
+  // Update visual
+  document.querySelectorAll(".scale-btn").forEach((btn, idx) => {
+    btn.classList.toggle("selected", scaleOptions[idx].value === value);
+  });
+
+  updateNavButtons();
+
+  // Auto-advance after brief delay
+  setTimeout(() => {
+    if (currentQuestion < questions.length - 1) {
+      currentQuestion++;
+      showQuestion();
+    } else {
+      finishTest();
+    }
+  }, 350);
+}
+
+function updateNavButtons() {
+  const prevBtn = document.getElementById("prev-btn");
+  const nextBtn = document.getElementById("next-btn");
+
+  if (prevBtn) prevBtn.disabled = currentQuestion === 0;
+  if (nextBtn) nextBtn.disabled = answers[currentQuestion] === null;
+}
+
+function goPrev() {
+  if (currentQuestion > 0) {
+    currentQuestion--;
+    showQuestion();
   }
+}
 
-  if (currentIndex < mbtiQuestions.length - 1) {
-    currentIndex++;
-    renderQuestion();
+function goNext() {
+  if (answers[currentQuestion] === null) return;
+
+  if (currentQuestion < questions.length - 1) {
+    currentQuestion++;
+    showQuestion();
   } else {
-    calculateResult();
+    finishTest();
   }
-};
-
-prevBtn.onclick = () => {
-  if (currentIndex > 0) {
-    currentIndex--;
-    renderQuestion();
-  }
-};
-
-// Calculate MBTI type
-function calculateResult() {
-  // Sort functions by score
-  const sortedFunctions = Object.entries(functionScores)
-    .sort((a, b) => b[1] - a[1])
-    .map(([fn]) => fn);
-
-  const maxRank = sortedFunctions.length;
-
-  const mbtiTypes = {
-    INTP: ["Ti", "Ne", "Si", "Fe"],
-    ISTP: ["Ti", "Se", "Ni", "Fe"],
-    ENTP: ["Ne", "Ti", "Fe", "Si"],
-    ENFP: ["Ne", "Fi", "Te", "Si"],
-    ISFP: ["Fi", "Se", "Ni", "Te"],
-    INFP: ["Fi", "Ne", "Si", "Te"],
-    INTJ: ["Ni", "Te", "Fi", "Se"],
-    INFJ: ["Ni", "Fe", "Ti", "Se"],
-    ESTJ: ["Te", "Si", "Ne", "Fi"],
-    ENTJ: ["Te", "Ni", "Se", "Fi"],
-    ESFJ: ["Fe", "Si", "Ne", "Ti"],
-    ENFJ: ["Fe", "Ni", "Se", "Ti"],
-    ISTJ: ["Si", "Te", "Fi", "Ne"],
-    ISFJ: ["Si", "Fe", "Ti", "Ne"],
-    ESTP: ["Se", "Ti", "Fe", "Ni"],
-    ESFP: ["Se", "Fi", "Te", "Ni"],
-  };
-
-  let bestType = null;
-  let bestScore = Infinity;
-
-  for (const [type, stack] of Object.entries(mbtiTypes)) {
-    let score = 0;
-    for (let i = 0; i < stack.length; i++) {
-      let rank = sortedFunctions.indexOf(stack[i]);
-      if (rank === -1) rank = maxRank;
-      score += Math.abs(rank - i);
-    }
-    if (score < bestScore) {
-      bestScore = score;
-      bestType = type;
-    }
-  }
-
-  window.location.href = `result.html?type=${bestType}`;
 }
 
-// Initial render
-renderQuestion();
+function finishTest() {
+  const type = calculateMBTI();
+  window.location.href = `result.html?type=${type}`;
+}
+
+// ========== MBTI CALCULATION ==========
+
+function calculateMBTI() {
+  let ei = 0, sn = 0, tf = 0, jp = 0;
+
+  questions.forEach((q, i) => {
+    const ans = answers[i];
+    if (ans === null) return;
+
+    if (q.dimension === "EI") {
+      ei += (q.direction === "E") ? ans : -ans;
+    } else if (q.dimension === "SN") {
+      sn += (q.direction === "S") ? ans : -ans;
+    } else if (q.dimension === "TF") {
+      tf += (q.direction === "T") ? ans : -ans;
+    } else if (q.dimension === "JP") {
+      jp += (q.direction === "J") ? ans : -ans;
+    }
+  });
+
+  let type = "";
+  type += ei >= 0 ? "E" : "I";
+  type += sn >= 0 ? "S" : "N";
+  type += tf >= 0 ? "T" : "F";
+  type += jp >= 0 ? "J" : "P";
+
+  return type;
+}
+
+// ========== INIT ==========
+showWelcome();
